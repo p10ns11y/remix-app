@@ -1,17 +1,40 @@
+import type { ActionFunction } from 'remix';
+import type { Joke } from '@prisma/client';
+import { redirect } from 'remix';
+import { db } from '~/utils/db.server';
+
+export const action: ActionFunction = async ({ request }) => {
+  const form = await request.formData();
+  const newJokeObject = Object.fromEntries(form.entries()) as Pick<
+    Joke,
+    'name' | 'content'
+  >;
+
+  const joke: Joke = await db.joke.create({ data: newJokeObject });
+
+  return redirect(`/jokes/${joke.id}`);
+};
+
 export default function NewJokeRoute() {
   return (
     <div>
-      <h1>New Joke</h1>
+      <p>Add your own hilarious joke</p>
       <form method="post">
         <div>
-          <label htmlFor="name">Name:</label>
-          <input id="name" type="text" name="name" placeholder="Write name" />
+          <label>
+            Name: <input type="text" name="name" />
+          </label>
         </div>
         <div>
-          <label htmlFor="content">Content:</label>
-          <textarea id="content" name="content" placeholder="Write content" />
+          <label>
+            Content: <textarea name="content" />
+          </label>
         </div>
-        <button type="submit">Create</button>
+        <div>
+          <button type="submit" className="button">
+            Add
+          </button>
+        </div>
       </form>
     </div>
   );

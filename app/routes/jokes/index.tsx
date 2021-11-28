@@ -1,6 +1,6 @@
 import type { LoaderFunction } from 'remix';
 import type { Joke } from '@prisma/client';
-import { useLoaderData, Link } from 'remix';
+import { useLoaderData, Link, useCatch } from 'remix';
 import { db } from '~/utils/db.server';
 
 export const loader: LoaderFunction = async () => {
@@ -24,6 +24,17 @@ export default function JokesIndexRoute() {
       <Link to={randomJoke.id}>"{randomJoke.name}" Permalink</Link>
     </div>
   );
+}
+
+export function CatchBoundary() {
+  let caught = useCatch();
+
+  if (caught.status === 404) {
+    return (
+      <div className="error-container">There are no jokes to display.</div>
+    );
+  }
+  throw new Error(`Unexpected caught response with status: ${caught.status}`);
 }
 
 export function ErrorBoundary() {

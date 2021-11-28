@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 import type { LinksFunction, LoaderFunction } from 'remix';
-import { Outlet, Link, useLoaderData } from 'remix';
+import { Outlet, Link, useLoaderData, useCatch } from 'remix';
 import { db } from '~/utils/db.server';
 import { getUser } from '~/utils/session.server';
 import stylesUrl from '~/styles/jokes.css';
@@ -19,6 +19,9 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
+  if (!user) {
+    throw new Response('Unauthorized', { status: 401 });
+  }
   const data: LoaderData = {
     user,
     jokeListItems: await db.joke.findMany({
@@ -84,4 +87,17 @@ export default function JokesRoute() {
       </main>
     </div>
   );
+}
+
+export function CatchBoundary() {
+  let caught = useCatch();
+
+  if (caught.status === 401) {
+    return (
+      <div className="error-container">
+        <p>You must be logged in to create a joke.</p>
+        <Link to="/login">Login</Link>
+      </div>
+    );
+  }
 }

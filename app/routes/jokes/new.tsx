@@ -2,6 +2,7 @@ import type { ActionFunction } from 'remix';
 import type { Joke } from '@prisma/client';
 import { redirect, useActionData } from 'remix';
 import { db } from '~/utils/db.server';
+import { requireUserId } from '~/utils/session.server';
 
 function validateJokeContent(content: string) {
   if (content.length < 10) {
@@ -47,10 +48,10 @@ export const action: ActionFunction = async ({
     return { fieldErrors, fields };
   }
 
-  const newJokeObject = Object.fromEntries(form.entries()) as Pick<
-    Joke,
-    'name' | 'content'
-  >;
+  const newJokeObject = {
+    ...Object.fromEntries(form.entries()),
+    jokesterId: await requireUserId(request),
+  } as Pick<Joke, 'name' | 'content' | 'jokesterId'>;
 
   const joke: Joke = await db.joke.create({ data: newJokeObject });
 

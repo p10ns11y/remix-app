@@ -1,6 +1,6 @@
 import type { Joke } from '@prisma/client';
 import type { LoaderFunction } from 'remix';
-import { useLoaderData, Link } from 'remix';
+import { useLoaderData, Link, useParams } from 'remix';
 import { db } from '~/utils/db.server';
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -22,5 +22,12 @@ export default function JokeRoute() {
       <p>{joke.content}</p>
       <Link to=".">{joke.name} Permalink</Link>
     </div>
+  );
+}
+
+export function ErrorBoundary() {
+  let { jokeId } = useParams();
+  return (
+    <div className="error-container">{`There was an error loading joke by the id ${jokeId}. Sorry.`}</div>
   );
 }

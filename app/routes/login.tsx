@@ -1,7 +1,7 @@
 import type { ActionFunction, LinksFunction } from 'remix';
 import { useActionData, Link, useSearchParams } from 'remix';
 import { db } from '~/utils/db.server';
-import { login, createUserSession } from '~/utils/session.server';
+import { login, register, createUserSession } from '~/utils/session.server';
 import stylesUrl from '../styles/login.css';
 
 export let links: LinksFunction = () => {
@@ -40,7 +40,7 @@ export let action: ActionFunction = async ({
   let loginType = form.get('loginType');
   let username = form.get('username');
   let password = form.get('password');
-  let redirectTo = form.get('redirectTo');
+  let redirectTo = form.get('redirectTo') || '/jokes';
   if (
     typeof loginType !== 'string' ||
     typeof username !== 'string' ||
@@ -66,7 +66,7 @@ export let action: ActionFunction = async ({
           formError: `Username/Password combination is incorrect`,
         };
       }
-      return createUserSession({ userId: user.id, redirectTo: '/jokes' });
+      return createUserSession({ userId: user.id, redirectTo });
     }
     case 'register': {
       let userExists = await db.user.findFirst({
@@ -78,9 +78,8 @@ export let action: ActionFunction = async ({
           formError: `User with username ${username} already exists`,
         };
       }
-      // create the user
-      // create their session and redirect to /jokes
-      return { fields, formError: 'Not implemented' };
+      const user = await register({ username, password });
+      return createUserSession({ userId: user.id, redirectTo: '/jokes' });
     }
     default: {
       return { fields, formError: `Login type invalid` };

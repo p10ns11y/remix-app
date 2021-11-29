@@ -1,5 +1,5 @@
 import type { LinksFunction, MetaFunction } from 'remix';
-import { LiveReload, Links, Meta, Outlet, useCatch } from 'remix';
+import { LiveReload, Links, Meta, Scripts, Outlet, useCatch } from 'remix';
 
 import globalStylesUrl from './styles/global.css';
 import globalMediumStylesUrl from './styles/global-medium.css';
@@ -53,6 +53,7 @@ function Document({
       </head>
       <body>
         {children}
+        <Scripts />
         {process.env.NODE_ENV === 'development' ? <LiveReload /> : null}
       </body>
     </html>

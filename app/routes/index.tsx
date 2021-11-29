@@ -30,6 +30,11 @@ export default function Index() {
             <li>
               <Link to="jokes">Read Jokes</Link>
             </li>
+            <li>
+              <Link reloadDocument to="jokes.rss">
+                Subscibe to jokes feed
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>

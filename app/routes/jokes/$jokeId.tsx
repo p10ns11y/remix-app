@@ -1,5 +1,5 @@
 import type { Joke } from '@prisma/client';
-import type { LoaderFunction } from 'remix';
+import type { LoaderFunction, MetaFunction } from 'remix';
 import { useLoaderData, Link, useParams, useCatch } from 'remix';
 import { db } from '~/utils/db.server';
 
@@ -15,6 +15,19 @@ export const loader: LoaderFunction = async ({ params }) => {
   }
 
   return joke;
+};
+
+export const meta: MetaFunction = ({ data: joke }: { data: Joke | null }) => {
+  if (!joke) {
+    return {
+      title: 'No joke',
+      description: 'No joke found',
+    };
+  }
+  return {
+    title: `"${joke.name}" joke`,
+    description: `Enjoy the "${joke.name}" joke and much more`,
+  };
 };
 
 export default function JokeRoute() {

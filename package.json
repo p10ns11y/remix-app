@@ -9,11 +9,14 @@
   "scripts": {
     "build": "remix build",
     "dev": "remix dev",
+    "dev:netlify": "cross-env NODE_ENV=development netlify dev",
     "postinstall": "remix setup node",
     "start": "remix-serve build"
   },
   "dependencies": {
+    "@netlify/functions": "^0.7.2",
     "@prisma/client": "^3.5.0",
+    "@remix-run/netlify": "^1.0.6",
     "@remix-run/react": "^1.0.4",
     "@remix-run/serve": "^1.0.4",
     "bcrypt": "^5.0.1",
@@ -26,6 +29,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
+    "cross-env": "^7.0.3",
     "esbuild-register": "^3.2.0",
     "prisma": "^3.5.0",
     "typescript": "^4.1.2"
